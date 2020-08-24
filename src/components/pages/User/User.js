@@ -25,9 +25,9 @@ const User = (props) => {
 
 	useEffect(() => {
 		// we want the user_url to be like /users/1
-		const user_url = `http://localhost:3001/api/v1/users/${user_id}`
-		const exams_url = `http://localhost:3001/api/v1/exams.json`
-		const matches_url = `http://localhost:3001/api/v1/matches/${user_id}`
+		const user_url = `https://finswap-api.herokuapp.com/api/v1/users/${user_id}`
+		const exams_url = `https://finswap-api.herokuapp.com/api/v1/exams.json`
+		const matches_url = `https://finswap-api.herokuapp.com/api/v1/matches/${user_id}`
 
 		//get user info
 		axios.get(user_url)
@@ -137,7 +137,7 @@ const User = (props) => {
 			//post the course code
 		var prefState = (pref == 'want') ? wants : owns;
 		const pref_name = (pref == 'want') ? 'wants' : 'owns';
-		const base_url = 'http://localhost:3001/api/v1/' + pref_name
+		const base_url = 'https://finswap-api.herokuapp.com/api/v1/' + pref_name
 		const handleSubmit = (e) => {
 			for (var i = 0; i < pref_ids(pref).length; i++) {
 				var pref_id = pref_ids(pref)[i]

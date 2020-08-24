@@ -7,7 +7,7 @@ const Users = () => {
 	const [ users, setUsers ] = useState([])
 	
 	useEffect(()=> { 
-		axios.get('http://localhost:3001/api/v1/users.json')
+		axios.get('https://finswap-api.herokuapp.com/api/v1/users.json')
 		.then( resp => {
 			setUsers(resp.data.data)
 		})
