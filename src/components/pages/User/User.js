@@ -7,8 +7,10 @@ import Header from './Header'
 import Own from './Own'
 import Want from './Want'
 import Form from './Form'
+import Match from './Match'
 
 const User = (props) => {
+	const user_id = props.match.params.user_id
 	//this is an object
 	const [ user, setUser] = useState({})
 	//this is an array
@@ -17,12 +19,15 @@ const User = (props) => {
 	const [ exams, setExams] = useState([])
 	const [ wants, setWants] = useState({})
 	const [ owns, setOwns] = useState({})
+	const [ matches, setMatches ] = useState([])
+	//set this to true when algo has run
+	const [ algo_ran, setAlgoRan ] = useState(false)
 
 	useEffect(() => {
 		// we want the user_url to be like /users/1
-		const userID = props.match.params.user_id
-		const user_url = `http://localhost:3001/api/v1/users/${userID}`
+		const user_url = `http://localhost:3001/api/v1/users/${user_id}`
 		const exams_url = `http://localhost:3001/api/v1/exams.json`
+		const matches_url = `http://localhost:3001/api/v1/matches/${user_id}`
 
 		//get user info
 		axios.get(user_url)
@@ -32,110 +37,127 @@ const User = (props) => {
 				setTaCourseContent(resp.data.included)
 				setLoaded(true)
 			})
-			.catch(resp => console.log(resp))
+			.catch(resp => {
+			})
+
 		//get exam info
 		axios.get(exams_url)
 			.then(resp => { 
 				setExams(resp.data.data)
 			})
-			.catch(resp => console.log(resp))
+			.catch(resp => {
+			})
+
+		//get matches info
+		axios.get(matches_url)
+			.then(resp => { 
+				setMatches(resp.data.data)
+//				console.log('tem', resp.data.data);
+//				console.log('matches:',matches);
+//				console.log('match cycles:',resp.data.data);
+			})
+			.catch(error => {
+				console.log(error)
+			})
 	}, [])
 
-	const exams_list  = exams.map( item => ({
+	//BUG:find way to make both exam lists depend on eachother
+	//and update the differnece when the other is changed
+	var exams_list_owns  = exams.map( item => ({
+		label : item.attributes.course_code,
+		value : item.attributes.course_code
+	})) 
+	var exams_list_wants  = exams.map( item => ({
 		label : item.attributes.course_code,
 		value : item.attributes.course_code
 	})) 
 
-
-	const want_list = ta_courses_pref.filter(item => item.type.includes("want")).map( item => ({ key : item.id, values : item.attributes }))
-
-	const own_list = ta_courses_pref.filter(item => item.type.includes("own")).map( item => ({ key : item.id, values : item.attributes }))
-
-	const want_style_list = want_list.map( item => {
-		//this returns an object
-		return (
-		<Want
-			key = {item.key}
-			values = {item.values}
-		/>
-		)
-	}) 
-
-	const own_style_list = own_list.map( item => {
-		//this returns an object
-		return (
-		<Own
-			key = {item.key}
-			values = {item.values}
-		/>
-		)
-	}) 
-
-	const handleChange_want = (e) => {
-		//e is an array
-		if (e != null) {
-			const want_courses = e.map(item => ({user_id: Number(props.match.params.user_id), course_code : item.value}))
-			setWants(want_courses)
-		}
-	}
-	const handleChange_own = (e) => {
-		//e is an array
-		if (e != null) {
-			const own_courses = e.map(item => ({user_id: Number(props.match.params.user_id), course_code : item.value}))
-			setOwns(own_courses)
-		}
+	const courses_user_matched_on = (user_id) => {
+		const courses = matches.filter( item => item.attributes.user_id == user_id).map(item => ({ course_match_info:  item.attributes }))
+		return courses
 	}
 
 
-	const want_ids = want_list.map(want_id => want_id.key)
-	const own_ids = own_list.map(own_id => own_id.key)
-	const handleSubmit_want = (e) => {
-//		const csrfToken = document.querySelector('[name=csrf-token]').content
-//		axios.defaults.headers.common['X-CSRF-TOKEN'] = csrfToken
-
-		//hack solution:delete all wants for that user
-		//and just add whatever they added in that field
-		//post the course code
-		for (var i = 0; i < want_ids.length; i++) {
-			var want_id = want_ids[i]
-			axios.delete(`http://localhost:3001/api/v1/wants/${want_id}`)
-				.then(resp => {
-					debugger
-				})
-				.catch(resp => {})
-		}
-		for (var i = 0; i < wants.length; i++) {
-			axios.post('http://localhost:3001/api/v1/wants', wants[i])
-				.then(resp => {
-					debugger
-				})
-				.catch(resp => {})
-		}
+	const pref_list = (pref) => {
+		const prefs_list = ta_courses_pref.filter(item => item.type.includes(pref)).map( item => ({ key : item.id, values : item.attributes }))
+			return prefs_list
 	}
-	const handleSubmit_own = (e) => {
-//		const csrfToken = document.querySelector('[name=csrf-token]').content
-//		axios.defaults.headers.common['X-CSRF-TOKEN'] = csrfToken
 
-		//hack solution:delete all wants for that user
-		//and just add whatever they added in that field
-		//post the course code
-		for (var i = 0; i < own_ids.length; i++) {
-			var own_id = own_ids[i]
-			axios.delete(`http://localhost:3001/api/v1/owns/${own_id}`)
-				.then(resp => {
-					debugger
-				})
-				.catch(resp => {})
-		}
-		for (var i = 0; i < owns.length; i++) {
-			axios.post('http://localhost:3001/api/v1/owns', owns[i])
-				.then(resp => {
-					debugger
-				})
-				.catch(resp => {})
-		}
+	const pref_style_list = (pref) => {
+		var Pref = (pref == 'want') ? Want : Own;
+		return pref_list(pref).map( item => {
+			//this returns an object
+			return (
+				<Pref
+					key = {item.key}
+					values = {item.values}
+				/>
+			)
+		}) 
 	}
-	//get button type
+
+	var change_counter = 0
+
+//	console.log('current wants:', wants);
+//	console.log('current owns:', owns);
+	const handle_change = (pref) => {
+		//when change is made, we subtract that element from a global exams list that the other form uses
+		var setPrefState = (pref == 'want') ? setWants : setOwns;
+		var prefState = (pref == 'want') ? wants : owns;
+//		console.log(change_counter);
+//		console.log('pref:',pref,', prefstate:',  prefState);
+		const handleChange = (e) => {
+			//e is an array
+			if (e != null) {
+				const pref_courses = e.map(item => ({user_id: Number(props.match.params.user_id), course_code : item.value}))
+				setPrefState(pref_courses)
+//				console.log('change state:', prefState);
+//				console.log(change_counter);
+			}
+			else{
+				//when all are deleted, state has last course to be deleted
+				//we want to clear the state in this case
+//				console.log('e is null and state has one elemnt:',prefState );
+				setPrefState({})
+				//BUG: if no changes were made and button clicked this gets a called and everything is deleted
+			}
+		}
+		change_counter++
+		return handleChange
+	}
+
+	const pref_ids = (pref) => pref_list(pref).map(want_id => want_id.key)
+
+	const handle_submit = (pref) => {
+	//		const csrfToken = document.querySelector('[name=csrf-token]').content
+	//		axios.defaults.headers.common['X-CSRF-TOKEN'] = csrfToken
+
+			//hack solution:delete all wants for that user
+			//and just add whatever they added in that field
+			//post the course code
+		var prefState = (pref == 'want') ? wants : owns;
+		const pref_name = (pref == 'want') ? 'wants' : 'owns';
+		const base_url = 'http://localhost:3001/api/v1/' + pref_name
+		const handleSubmit = (e) => {
+			for (var i = 0; i < pref_ids(pref).length; i++) {
+				var pref_id = pref_ids(pref)[i]
+//				console.log(pref_id);
+				axios.delete(base_url + '/' + pref_id)
+					.then(resp => {
+						debugger
+					})
+					.catch(resp => {})
+			}
+			for (var i = 0; i < prefState.length; i++) {
+				axios.post(base_url, prefState[i])
+					.then(resp => {
+						debugger
+					})
+					.catch(resp => {})
+			}
+		}
+		return handleSubmit
+	}
 
 	return (
 		<div className="wrapper">
@@ -149,14 +171,15 @@ const User = (props) => {
 					</div>
 					<div className="list">
 		<h3>You have these courses that you would like to switch with someone:</h3>
-						{ own_style_list } 
+						{ pref_style_list('own') } 
 						<br></br>
 						<Form
 							/*these are the inputs*/
-							handleChange={handleChange_own}
-							handleSubmit={handleSubmit_own}
-							exams_list={ exams_list }
-							ta_course_content={ own_list }
+							pref_type={'own'}
+							handleChange={handle_change('own')}
+							handleSubmit={handle_submit('own')}
+							exams_list={ exams_list_owns }
+							ta_course_content={ pref_list('own') }
 							/*this is the target values to be saved*/
 							ta_pref={owns}
 						/>
@@ -167,21 +190,26 @@ const User = (props) => {
 					<br></br>
 					<div className="list">
 		<h3>These are the courses that you would like to switch with someone:</h3>
-						{ want_style_list } 
+						{ pref_style_list('want') } 
 
 					<br></br>
 						<Form
 							/*these are the inputs*/
-							handleChange={handleChange_want}
-							handleSubmit={handleSubmit_want}
-							exams_list={ exams_list }
-							ta_course_content={ want_list }
+							pref_type={'want'}
+							handleChange={handle_change('want')}
+							handleSubmit={handle_submit('want')}
+							exams_list={ exams_list_wants }
+							ta_course_content={ pref_list('want') }
 							/*this is the target values to be saved*/
 							ta_pref={wants}
 						/>
 						<br></br>
 					</div>
 					<div className="column">
+						<Match
+							courses_matched={courses_user_matched_on(user_id)}
+							matches_cycle={matches}
+						/>
 					</div>
 				</Fragment>
 			}

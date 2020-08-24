@@ -5,13 +5,15 @@ import Select from 'react-select';
 import { components } from "react-select";
 
 const Form = (props) => {
-	console.log(props);
 	const exams_list = props.exams_list
 	const ta_course_content = props.ta_course_content
 	const handleSubmit = props.handleSubmit
 	const handleChange = props.handleChange
 	const ta_preferences = props.ta_pref
+	const pref_type = props.pref_type
 
+//	console.log('pref type:', pref_type, ', ta course content:', ta_course_content);
+//	console.log('pref type:', pref_type);
 
 	const default_values = ta_course_content.map( item => ({
 		label : item.values.course_code,
