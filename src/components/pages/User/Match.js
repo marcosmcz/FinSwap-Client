@@ -1,6 +1,9 @@
 import React from 'react'
 
 const Match = (props) => {
+	//state of whether swap algorithm has run yet
+	const algo_state = props.algo_state
+	console.log('algo state:', algo_state);
 	//array of the matches/cycle
 	const matches_cycle = props.matches_cycle 
 	//array of info of the courses that the TA matched on (info of owns)
@@ -36,13 +39,18 @@ const Match = (props) => {
 
 	//print the courses the ta matched with
 	const check_match = (course_matched) => {
-		if (courses_matched.length > 0) {
-			return (
-				<h2>Congrats! You got a match for your course(s): { courses_matched_codes.join(', ') }. </h2>
-			)
+		if (algo_state) {
+			if (courses_matched.length > 0) {
+				return (
+					<h2>Congrats! You got a match for your course(s): { courses_matched_codes.join(', ') }. </h2>
+				)
+			}
+			else{
+				return <h2>Oh no! You did not get any matches :(</h2>
+			}
 		}
 		else{
-			return <h2>Oh no! You did not get any matches :(</h2>
+			return <h4>The Fin-Swap algorithm has not yet run. When it has and if you get any matches they will be posted here. Thank you for choosing Fin-Swap to better organize your final exam schedule to meet your needs!</h4>
 		}
 	}
 
