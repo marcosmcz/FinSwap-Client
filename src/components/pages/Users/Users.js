@@ -5,9 +5,11 @@ import User from './User';
 const Users = () => {
 	// this is an array
 	const [ users, setUsers ] = useState([])
+//	const user_url = `https://finswap-api.herokuapp.com/api/v1/users.json`
+	const user_url = `http://localhost:3001/api/v1/users.json`
 	
 	useEffect(()=> { 
-		axios.get('https://finswap-api.herokuapp.com/api/v1/users.json')
+		axios.get(user_url)
 		.then( resp => {
 			setUsers(resp.data.data)
 		})
