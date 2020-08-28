@@ -74,6 +74,7 @@ const User = (props) => {
 			})
 	}, [algo_ran])
 
+	// exam lists to best used in each drop down menu
 	//BUG:find way to make both exam lists depend on eachother
 	//and update the differnece when the other is changed
 	var exams_list_owns  = exams.map( item => ({
@@ -142,15 +143,13 @@ const User = (props) => {
 	const pref_ids = (pref) => pref_list(pref).map(want_id => want_id.key)
 
 	const handle_submit = (pref) => {
-	//		const csrfToken = document.querySelector('[name=csrf-token]').content
-	//		axios.defaults.headers.common['X-CSRF-TOKEN'] = csrfToken
-
-			//hack solution:delete all wants for that user
+			//hack solution:delete all wants/owns for that user
 			//and just add whatever they added in that field
 			//post the course code
 		var prefState = (pref == 'want') ? wants : owns;
 		const pref_name = (pref == 'want') ? 'wants' : 'owns';
-		const base_url = 'https://finswap-api.herokuapp.com/api/v1/' + pref_name
+//		const base_url = 'https://finswap-api.herokuapp.com/api/v1/' + pref_name
+		const base_url = 'http://localhost:300/api/v1/' + pref_name
 		const handleSubmit = (e) => {
 			for (var i = 0; i < pref_ids(pref).length; i++) {
 				var pref_id = pref_ids(pref)[i]

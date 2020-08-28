@@ -14,11 +14,14 @@ const Form = (props) => {
 //	console.log('pref type:', pref_type, ', ta course content:', ta_course_content);
 //	console.log('pref type:', pref_type);
 
+	// courses codes to be put in drop down menu
 	const default_values = ta_course_content.map( item => ({
 		label : item.values.course_code,
 		value : item.values.course_code
 	}))
 
+	//set the max amount of courses that can chosen to 3
+	//this is to limit the input for the swap algo
 	const Menu = menu_props => {
 	  const optionSelectedLength = menu_props.getValue().length || 0;
 	  return (
@@ -35,6 +38,8 @@ const Form = (props) => {
 	const isValidNewOption = (inputValue, selectValue) =>
 		inputValue.length > 0 && selectValue.length < 5;
 
+	// determine what the button will say depending on whether
+	// courses have been added or not
 	const determine_button = () => {
 		if (Object.keys(default_values).length == 0) {
 			return <button type="submit">Add a course</button>

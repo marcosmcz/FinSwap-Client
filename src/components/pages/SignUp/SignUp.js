@@ -4,7 +4,6 @@ import { useHistory }  from 'react-router-dom';
 import SignUpForm from './SignUpForm'
 
 const SignUp = () => {
-	//this is an object
 	const [ user, setUser ] = useState({})
 	const [ error, setError ] = useState(false)
 	const [ email_message, setEmailMessage ] = useState("")
@@ -36,7 +35,8 @@ const SignUp = () => {
 		//this psuedo changes the name so that we can send a 
 		//nested json to the back end in the appropriate format
 		const signup_info = {user}
-		const signup_url = `https://finswap-api.herokuapp.com/api/v1/users`
+//		const signup_url = `https://finswap-api.herokuapp.com/api/v1/users`
+		const signup_url = `http://localhost:3001/api/v1/users`
 
 		axios.post(signup_url, signup_info)
 			.then(resp => {
