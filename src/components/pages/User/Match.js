@@ -3,7 +3,7 @@ import React from 'react'
 const Match = (props) => {
 	//state of whether swap algorithm has run yet
 	const algo_state = props.algo_state
-	console.log('algo state:', algo_state);
+//	console.log('algo state:', algo_state);
 	//array of the matches/cycle
 	const matches_cycle = props.matches_cycle 
 	//array of info of the courses that the TA matched on (info of owns)
@@ -27,19 +27,22 @@ const Match = (props) => {
 	  }
 	  return hash;
 	}
+
 	//group the matches_cycles by cycle_id
 	const matches_grouped_by_cycle = Object.values(groupItemBy(matches_cycle
 		.map(item => item.attributes),'cycle_id'))
+//
+//	console.log('matches cycle:', matches_cycle);
+//	console.log('courses matched :', courses_matched);
+//	console.log('course codes matched:', courses_matched_codes);
+//	console.log('course match pair:', match_pairs);
+//	console.log('matches grouped by cycle id;', matches_grouped_by_cycle);
 
-	console.log('matches cycle:', matches_cycle);
-	console.log('courses matched :', courses_matched);
-	console.log('course codes matched:', courses_matched_codes);
-	console.log('course match pair:', match_pairs);
-	console.log('matches grouped by cycle id;', matches_grouped_by_cycle);
-
-	//print the courses the ta matched with
+	//set the subheader the TA will see when the algo has/hasnt run yet
 	const check_match = (course_matched) => {
+		//if the algo has run
 		if (algo_state) {
+			//if the they get matches
 			if (courses_matched.length > 0) {
 				return (
 					<h2>Congrats! You got a match for your course(s): { courses_matched_codes.join(', ') }. </h2>
@@ -49,12 +52,16 @@ const Match = (props) => {
 				return <h2>Oh no! You did not get any matches :(</h2>
 			}
 		}
+		//if they algo hasnt run yet
 		else{
 			return <h4>The Fin-Swap algorithm has not yet run. When it has and if you get any matches they will be posted here. Thank you for choosing Fin-Swap to better organize your final exam schedule to meet your needs!</h4>
 		}
 	}
 
+	//set the instructions the TA will see if they got matches after the
+	//algo has run
 	const matching_info = () => {
+		if(algo_state){
 		//within each grouped cycle of matches do:
 		//note: |matches_grouped_by_cycle|==|courses_matched|
 		// ==|courses_matched|
@@ -86,6 +93,7 @@ const Match = (props) => {
 			)
 		}
 		return instructions
+	}
 	}
 
 	return (

@@ -1,7 +1,7 @@
 import React from 'react'
 
 const SignUpForm = (props) => {
-	console.log('sign up info form:', props);
+//	console.log('sign up info form:', props);
 	const handleSubmit = props.handleSubmit
 	const handleChange = props.handleChange
 	const email = props.signup_info.email
