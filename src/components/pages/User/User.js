@@ -24,14 +24,15 @@ const User = (props) => {
 	const [ algo_ran, setAlgoRan ] = useState(false)
 
 	useEffect(() => {
-//		const user_url = `https://finswap-api.herokuapp.com/api/v1/users/${user_id}`
-//		const exams_url = `https://finswap-api.herokuapp.com/api/v1/exams.json`
-//		const matches_url = `https://finswap-api.herokuapp.com/api/v1/matches/${user_id}`
+		const user_url = `https://finswap-api.herokuapp.com/api/v1/users/${user_id}`
+		const exams_url = `https://finswap-api.herokuapp.com/api/v1/exams.json`
+		const matches_url = `https://finswap-api.herokuapp.com/api/v1/matches/${user_id}`
+		const algo_url = `https://finswap-api.herokuapp.com/api/v1/algorithms.json`
 		// we want the user_url to be like /users/1
-		const user_url = `http://localhost:3001/api/v1/users/${user_id}`
-		const exams_url = `http://localhost:3001/api/v1/exams.json`
-		const matches_url = `http://localhost:3001/api/v1/matches/${user_id}`
-		const algo_url = `http://localhost:3001/api/v1/algorithms.json`
+//		const user_url = `http://localhost:3001/api/v1/users/${user_id}`
+//		const exams_url = `http://localhost:3001/api/v1/exams.json`
+//		const matches_url = `http://localhost:3001/api/v1/matches/${user_id}`
+//		const algo_url = `http://localhost:3001/api/v1/algorithms.json`
 
 		//get user info
 		axios.get(user_url)
