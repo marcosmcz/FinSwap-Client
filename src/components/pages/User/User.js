@@ -149,8 +149,8 @@ const User = (props) => {
 			//post the course code
 		var prefState = (pref == 'want') ? wants : owns;
 		const pref_name = (pref == 'want') ? 'wants' : 'owns';
-//		const base_url = 'https://finswap-api.herokuapp.com/api/v1/' + pref_name
-		const base_url = 'http://localhost:3001/api/v1/' + pref_name
+		const base_url = 'https://finswap-api.herokuapp.com/api/v1/' + pref_name
+//		const base_url = 'http://localhost:3001/api/v1/' + pref_name
 		const handleSubmit = (e) => {
 			for (var i = 0; i < pref_ids(pref).length; i++) {
 				var pref_id = pref_ids(pref)[i]
